@@ -28,12 +28,22 @@ class LinkedList:
 
     # Insert after a node
     def insertAfter(self, data, new_data):
+        if self.head is None:
+            return
         current_node = self.head
-        while current_node.next != None or  current_node.next.data == data:
+        if current_node.data == data:
+            nextNode = current_node.next
+            current_node.next = Node(new_data)
+            current_node.next.next = nextNode
+            return
+        while current_node.next != None or  current_node.data == data:
+            if current_node.data == data:
+                nextNode = current_node.next
+                current_node.next = Node(new_data)
+                current_node.next.next = nextNode
+                return
             current_node = current_node.next
-        nextNode = current_node.next
-        current_node.next = Node(new_data)
-        current_node.next.next = nextNode
+
 
     # Deleting a node at a specific index
     def deleteIndex(self, index):
@@ -55,7 +65,7 @@ class LinkedList:
         current_node = self.head
         count = 0
         while current_node != None:
-            if current_node == key:
+            if current_node.data == key:
                 return count
             count += 1
             current_node = current_node.next
@@ -63,8 +73,25 @@ class LinkedList:
 
     # Sort the linked list
     def sort(self, head):
-        pass
+        values = []
+        current_node = head
+        while current_node != None:
+            values.append(current_node.data)
+            current_node = current_node.next
+
+        values.sort()
+        self.head = Node(values[0])
+        for val in values[1:]:
+            current_node = self.head
+            while current_node.next != None:
+                current_node = current_node.next
+            current_node.next = Node(val)
+
 
     # Print the linked list
     def printList(self):
-        pass
+        current_node = self.head
+        while current_node != None:
+            print(current_node.data)
+            current_node = current_node.next
+        print("\n")

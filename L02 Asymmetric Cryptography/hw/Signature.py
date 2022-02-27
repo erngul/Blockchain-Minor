@@ -12,8 +12,9 @@ def generate_keys():
     return private_key, public_key
 
 def sign(message, private_key):
+    encodedMessage = str.encode(message)
     sig = private_key.sign(
-        message,
+        encodedMessage,
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()),
             salt_length=padding.PSS.MAX_LENGTH
@@ -23,10 +24,11 @@ def sign(message, private_key):
     return sig
 
 def verify(message, signature, public_key):
+    inputMessage = message.encode()
     try:
-        verification = public_key.verify(
+        public_key.verify(
             signature,
-            message,
+            inputMessage,
             padding.PSS(
                 mgf=padding.MGF1(hashes.SHA256()),
                 salt_length=padding.PSS.MAX_LENGTH
@@ -45,7 +47,7 @@ def save_keys(keys_file_name, keys, pw):
     prv_ser = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.BestAvailableEncryption(pw)
+        encryption_algorithm=serialization.BestAvailableEncryption(str.encode(pw))
     )
     pbc_ser = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
@@ -60,14 +62,10 @@ def save_keys(keys_file_name, keys, pw):
 
 def load_keys(keys_file_name, pw):
     loadfile = open(keys_file_name, "rb")
-    keys_list_ser = pickle.load(loadfile)
+    keys = pickle.load(loadfile)
     loadfile.close()
-
-    keys_list = []
-    for item in keys_list_ser:
-        key_name, private_key_ser, public_key_ser = item
-        private_key = serialization.load_pem_private_key(private_key_ser, password=pw)
-        public_key = serialization.load_pem_public_key(public_key_ser)
-
-        keys_list.append((key_name, private_key, public_key))
-    return keys_list
+    encryptedPrivateKey = keys[0][0]
+    encryptedpublicKey = keys[0][1]
+    private_key = serialization.load_pem_private_key(encryptedPrivateKey, password=str.encode(pw))
+    public_key = serialization.load_pem_public_key(encryptedpublicKey)
+    return (private_key, public_key)

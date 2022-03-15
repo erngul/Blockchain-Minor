@@ -1,24 +1,20 @@
 import hashlib
 
 
-
 class CBlock:
     previousHash = None
     CurrentHash = None
     previousBlock = None
     data = None
     Nonce = None
+
     def __init__(self, data, previousBlock=None):
         self.data = data
         self.previousBlock = previousBlock
-        self.CurrentHash = self.sha256(data)
+        self.CurrentHash = sha256(data)
         self.Nonce = 1
         if previousBlock is not None:
             self.previousHash = self.previousBlock.CurrentHash
-
-
-    def sha256(self, message):
-        return hashlib.sha256(message.encode('UTF-8')).hexdigest()
 
     def mine(self, leading_zeros):
         prefix = '0' * leading_zeros
@@ -29,16 +25,24 @@ class CBlock:
             digest = str(self.data) + str(i)
             if self.previousBlock is not None:
                 digest += str(self.previousHash)
-            digest = self.sha256(digest)
+            digest = sha256(digest)
             if digest.startswith(prefix):
                 self.CurrentHash = digest
                 return
 
     def is_valid_hash(self):
-        digest = str(self.data) + str(self.Nonce)
-        if self.previousBlock is not None:
-            digest += str(self.previousHash)
-        newHash = self.sha256(digest)
-        if  newHash == self.CurrentHash:
-            return True
-        return False
+        currentBlock = self
+        check = True
+        while currentBlock is not None:
+            digest = str(currentBlock.data) + str(currentBlock.Nonce)
+            if currentBlock.previousBlock is not None:
+                digest += str(currentBlock.previousHash)
+            newHash = sha256(digest)
+            if newHash != currentBlock.CurrentHash:
+                check = False
+            currentBlock = currentBlock.previousBlock
+        return check
+
+
+def sha256(message):
+    return hashlib.sha256(message.encode('UTF-8')).hexdigest()

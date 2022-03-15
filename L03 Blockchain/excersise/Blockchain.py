@@ -1,6 +1,3 @@
-from cryptography.hazmat.primitives import hashes
-import inspect
-
 class CBlock:
     previousHash = None
     previousBlock = None
@@ -12,11 +9,10 @@ class CBlock:
             self.previousHash = previousBlock.computeHash()
 
     def computeHash(self):
-        global hash1
         try:
-            hash1 = (str(self.data.string) + str(self.data.num))
+            hash1 = (str(self.data.string) + str(self.data.num) + str(self.previousHash))
         except:
-            hash1 = str(self.data)
+            hash1 = str(self.data) + str(self.previousHash)
         if self.previousHash is not None:
             hash1 = hash1 + str(self.previousBlock.computeHash())
         return hash(hash1)

@@ -2,14 +2,28 @@ from Signature import *
 from Transaction import *
 
 def print_transaction(tx_name, tx):
-    for key in keys_list:
-        decryptedMessage = decrypt(tx, key[0])
-        for tx.inputs
-        if decryptedMessage is not None:
-            print(key[2])
-            print(decryptedMessage)
-    # print(tx_name + ' ' + str(tx))
-    pass
+    print('---------------')
+    print('-- ' + tx_name)
+    counterIn = 0
+    counterOut = 0
+    for i in tx.inputs:
+        for key in keys_list:
+            decryptedMessage = decrypt(i, key[0])
+            if decryptedMessage is not None:
+                counterIn += 1
+                print(f'In[{counterIn}]: {key[2]} sends {decryptedMessage} coin')
+                pass
+    for o in tx.outputs:
+        for key in keys_list:
+            decryptedMessage = decrypt(o, key[0])
+            if decryptedMessage is not None:
+                counterOut+=1
+                print(f'Out[{counterOut}]: {key[2]} receives {decryptedMessage} coin')
+                pass
+    print()
+
+
+# print(tx_name + ' ' + str(tx))
 
 if __name__ == '__main__':
     

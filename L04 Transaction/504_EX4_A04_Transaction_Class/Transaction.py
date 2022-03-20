@@ -1,14 +1,13 @@
 from Signature import *
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
+
 class Tx:
     inputs = None
     outputs =None
+    sigs = None
 
     def __init__(self):
         self.inputs = []
         self.outputs = []
-        pass
 
     def __repr__(self):
         return repr([self.inputs, self.outputs])
@@ -21,6 +20,10 @@ class Tx:
         self.outputs.append(encrypt(str(amount).encode(), to_addr))
         pass
 
+    def sign(self, private):
+        rep = repr(self).encode()
+        # print(rep)
+        self.sigs = sign(rep, private)
 
 def encrypt(message, public_key):
     ciphertext = public_key.encrypt(

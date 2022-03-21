@@ -10,11 +10,11 @@ class Tx:
         self.sigs = []
 
     def add_input(self, from_addr, amount):
-        self.inputs.append((amount, from_addr))
+        self.inputs.append((from_addr, amount))
         pass
 
     def add_output(self, to_addr, amount):
-        self.outputs.append((amount, to_addr))
+        self.outputs.append((to_addr, amount))
         pass
 
     def sign(self, private):
@@ -22,16 +22,18 @@ class Tx:
 
 
     def is_valid(self):
-        amount = 0
+        amountInput = 0
+        amountOutput = 0
         for i in self.inputs:
-            amount += i[0]
+            amountInput += i[1]
         for o in self.outputs:
-            amount += o[0]
-        if amount < 0:
-            print('amount to low')
+            amountOutput += o[1]
+        if(amountOutput < 0 or amountInput < 0):
+            return False
+        if amountInput < amountOutput:
             return False
         for s in self.sigs:
-            if verify(self.concactList(), s, self.outputs[0][1]) == True:
+            if verify(self.concactList(), s, self.inputs[0][0]) == True:
                 if self.reqd is None:
                     return True
                 for ss in self.sigs:

@@ -9,22 +9,21 @@ def print_transaction(tx_name, tx):
     counterOut = 0
     for i in tx.inputs:
         for key in keys_list:
-            decryptedMessage = decrypt(i, key[1])
-            if decryptedMessage is not None:
+            if key[2] == i[1]:
                 counterIn += 1
-                print(f'In[{counterIn}]: {key[0]} sends {decryptedMessage} coin')
+                print(f'In[{counterIn}]: {key[0]} sends {i[0]} coin')
                 pass
     for o in tx.outputs:
         for key in keys_list:
-            decryptedMessage = decrypt(o, key[1])
-            if decryptedMessage is not None:
+            if key[2] == o[1]:
                 counterOut += 1
-                print(f'Out[{counterOut}]: {key[0]} receives {decryptedMessage} coin')
+                print(f'Out[{counterOut}]: {key[0]} receives {o[0]} coin')
                 pass
-    for key in keys_list:
-        verification = verify(repr(tx).encode(), tx.sigs, key[2])
-        if verification == True:
-            print(f'{tx_name} is signed by {key[0]}')
+    for sign in tx.sigs:
+        for key in keys_list:
+            verification = verify(tx.concactList(), sign, key[2])
+            if verification == True:
+                print(f'{tx_name} is signed by {key[0]}')
     print()
 
 if __name__ == "__main__":

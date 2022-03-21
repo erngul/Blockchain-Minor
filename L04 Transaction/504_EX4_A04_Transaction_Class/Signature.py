@@ -12,7 +12,7 @@ def generate_keys():
 
 def sign(message, private):
     sig = private.sign(
-    message,
+    bytes(str(message), 'utf-8'),
     padding.PSS(
         mgf=padding.MGF1(hashes.SHA256()),
         salt_length=padding.PSS.MAX_LENGTH
@@ -25,7 +25,7 @@ def verify(message, sig, public):
     try:
         verification = public.verify(
         sig,
-        message,
+        bytes(str(message), 'utf-8'),
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()),
             salt_length=padding.PSS.MAX_LENGTH

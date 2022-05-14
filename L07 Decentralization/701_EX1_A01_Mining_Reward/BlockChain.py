@@ -14,7 +14,7 @@ class CBlock:
     def computeHash(self):
         prefix = '0' * 2
         if self.previousBlock is not None:
-            self.previousHash = self.previousBlock.CurrentHash
+            self.previousHash = self.previousBlock.currentHash
         for i in range(1000000):
             self.Nonce = i
             digest = str(self.data) + str(i)

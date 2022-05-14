@@ -13,18 +13,20 @@ class CBlock:
         pass
 
     def computeHash(self):
-        prefix = '0' * 2
+        prefixZeros = 6
+        prefix = '0' * prefixZeros
         if self.previousBlock is not None:
-            self.previousHash = self.previousBlock.CurrentHash
-        for i in range(1000000):
+            self.previousHash = self.previousBlock.currentHash
+        for i in range(100000000):
             self.Nonce = i
             digest = str(self.data) + str(i)
             if self.previousBlock is not None:
                 digest += str(self.previousHash)
             digest = sha256(digest)
-            if digest.startswith(prefix):
+            if digest is not None and digest.startswith(prefix) and ord(digest[prefixZeros]) < 49:
+                print(digest)
                 self.currentHash = digest
-                return
+                return self.Nonce
 
     def is_valid(self):
         currentBlock = self

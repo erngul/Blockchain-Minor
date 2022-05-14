@@ -112,7 +112,8 @@ if __name__ == "__main__":
     Tx8 = Tx()
     Tx8.add_output(mara_pbc, 26.2)
     B5.addTx(Tx8)
-    if not B5.is_valid():
+    test = B5.is_valid()
+    if not test:
         print("Success! Greedy miner is detected.")
     else:
         print("Error! Greedy miner is not detected")

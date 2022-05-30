@@ -23,7 +23,7 @@ class CBlock:
             if self.previousBlock is not None:
                 digest += str(self.previousHash)
             digest = sha256(digest)
-            if digest is not None and digest.startswith(prefix) and ord(digest[prefixZeros]) < 49:
+            if digest is not None and digest.startswith(prefix) and ord(digest[prefixZeros]) > 48 and  ord(digest[prefixZeros]) < 60:
                 print(digest)
                 self.currentHash = digest
                 return self.Nonce
